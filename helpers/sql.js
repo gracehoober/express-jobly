@@ -20,3 +20,13 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 module.exports = { sqlForPartialUpdate };
+
+/**What do we think is going on?
+ * I: object of things to update and obj representing database
+ * O: {setCols: updated columns in a string
+ *      values: array of user keywords like any of these:
+ *              firstName, lastName, password, email, isAdmin
+ *
+ * line 9: if there is any data from dataToUpdate
+ * mapping every keys value to a sql column- has to have the same name
+ */
