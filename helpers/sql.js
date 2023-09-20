@@ -4,6 +4,18 @@ const { BadRequestError } = require("../expressError");
 
 // THIS NEEDS SOME GREAT DOCUMENTATION.
 
+/** sqlForPartialUpdate:
+ * Takes dataToUpdate (an object containing data to update) -> { firstName, lastName, password, email, isAdmin }
+ *  and jsToSql (an object mapping JavaScript column names to their corresponding PSQL column names)
+ *
+ * Maps jsToSql for all data included in the request, though if the column name not included in jsToSql map -> create a new column in the returned string setCols (which will eventually lead to the creation of a new row in the db).
+ *
+ *  Returns:
+ *    setCols: updated columns in a string -> first_name, last_name, ...
+ *    values: list of assigned SQL variables -> [$1, $2, ...]
+ *
+ */
+
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
