@@ -16,6 +16,9 @@ const { UnauthorizedError } = require("../expressError");
  */
 
 function authenticateJWT(req, res, next) {
+
+  console.log("Token", req.headers);
+
   const authHeader = req.headers?.authorization;
   if (authHeader) {
     const token = authHeader.replace(/^[Bb]earer /, "").trim();
