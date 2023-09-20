@@ -1,0 +1,9 @@
+SELECT handle,
+               name,
+               description,
+               num_employees AS "numEmployees",
+               logo_url      AS "logoUrl"
+        FROM companies
+       ${ WHERE name ILIKE *"sadfsdf"*}
+       ${WHERE num_employees >= 1000 AND num_employees <= 2000}
+        ORDER BY name

@@ -35,4 +35,28 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { sqlForPartialUpdate };
+
+function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
+  const keys = Object.keys(dataToUpdate);
+
+  console.log("keys", keys);
+
+  // No error if no keys, just want to return empty (or none).
+  if (keys.length === 0) return {};
+
+  for (const key of keys) {
+    console.log("Key", key, "Value", jsToSql[key]);
+  }
+
+  // {nameLike: 'apple', ...} => ['name ILIKE apple', ...]
+  const cols = keys.map((colName, idx) => `"${jsToSql[colName]} ${jsToSql[colName]}"=$${idx + 1}`)
+
+  return {
+    setCols: "WHERE " + cols.join(" AND"),
+    values: Object.values(dataToUpdate),
+  };
+}
+
+
+
+module.exports = { sqlForPartialUpdate, sqlForFilteringCompanies };
