@@ -2,18 +2,18 @@
 
 const { BadRequestError } = require("../expressError");
 
-// THIS NEEDS SOME GREAT DOCUMENTATION.
-
-/** sqlForPartialUpdate:
- * Takes dataToUpdate (an object containing data to update) -> { firstName, lastName, password, email, isAdmin }
- *  and jsToSql (an object mapping JavaScript column names to their corresponding PSQL column names)
+/** Translates input information (from data and jsToSql) into SQL like syntax
+ * for database update.
  *
- * Maps jsToSql for all data included in the request, though if the column name not included in jsToSql map -> create a new column in the returned string setCols (which will eventually lead to the creation of a new row in the db).
+ * data can be like { firstName, lastName, password, email, isAdmin },
+ *  but can have any or more properties.
  *
- *  Returns:
- *    setCols: updated columns in a string -> first_name, last_name, ...
- *    values: list of assigned SQL variables -> [$1, $2, ...]
+ * jsToPql can be like { firstName: "first_name", lastName: "last_name",
+ *  sAdmin: "is_admin" }
  *
+ *  Returns
+ *    { setCols: '"first_name=$1", "last_name=$2", ...',
+ *      values: ["aFirstName", "aLastName"]}
  */
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
@@ -25,6 +25,11 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
       `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );
 
+// console.log({
+//   setCols: cols.join(", "),
+//   values: Object.values(dataToUpdate),
+// })
+
   return {
     setCols: cols.join(", "),
     values: Object.values(dataToUpdate),
@@ -32,13 +37,3 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 module.exports = { sqlForPartialUpdate };
-
-/**What do we think is going on?
- * I: object of things to update and obj representing database
- * O: {setCols: updated columns in a string
- *      values: array of user keywords like any of these:
- *              firstName, lastName, password, email, isAdmin
- *
- * line 9: if there is any data from dataToUpdate
- * mapping every keys value to a sql column- has to have the same name
- */
