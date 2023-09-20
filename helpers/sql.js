@@ -8,7 +8,7 @@ const { BadRequestError } = require("../expressError");
  * data can be like { firstName, lastName, password, email, isAdmin },
  *  but can have any or more properties.
  *
- * jsToPql can be like { firstName: "first_name", lastName: "last_name",
+ * jsToSql can be like { firstName: "first_name", lastName: "last_name",
  *  sAdmin: "is_admin" }
  *
  *  Returns
@@ -18,6 +18,10 @@ const { BadRequestError } = require("../expressError");
 
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
+
+  console.log("keys", keys);
+  console.log("ERROR!",new BadRequestError("No data"));
+
   if (keys.length === 0) throw new BadRequestError("No data");
 
   // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
@@ -25,10 +29,10 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
       `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );
 
-// console.log({
-//   setCols: cols.join(", "),
-//   values: Object.values(dataToUpdate),
-// })
+  console.log("DATA", {
+    setCols: cols.join(", "),
+    values: Object.values(dataToUpdate),
+  });
 
   return {
     setCols: cols.join(", "),
