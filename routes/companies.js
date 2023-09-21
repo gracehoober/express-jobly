@@ -52,6 +52,29 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
+  console.log("Req.query", req.query, typeof req.query);
+
+  const data = req.query;
+
+  if (data.minEmployees) {
+    data.minEmployees = Number(data.minEmployees);
+  }
+
+  if (data.maxEmployees) {
+    data.maxEmployees = Number(data.maxEmployees);
+  }
+
+  if (isNaN(data.minEmployees) || isNaN(data.maxEmployees)) {
+    throw new Error("ErRRRorrr");
+  }
+
+  if (data.minEmployees > data.maxEmployees) {
+    throw new Error("ALSO Errorrrrr");
+  }
+
+  console.log("data", data);
+
+
   const validator = jsonschema.validate(
     req.query,
     companyFilterSchema,
@@ -62,7 +85,7 @@ router.get("/", async function (req, res, next) {
     throw new BadRequestError(errs);
   }
 
-  const companies = await Company.findAll();
+  const companies = await Company.findAll(req.query);
   return res.json({ companies });
 });
 

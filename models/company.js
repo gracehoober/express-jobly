@@ -56,13 +56,16 @@ class Company {
    * */
 
   static async findAll(data) {
-    const { setCols, values } = sqlForFilteringCompanies(
+    const {whereClause, values} = sqlForFilteringCompanies(
       data,
       {
         nameLike: ["name" ,"ILIKE"],
         minEmployees: ["num_employees", ">="],
         maxEmployees: ["num_employees", "<="]
       });
+
+      console.log("Where Clauses", whereClause, "values", values);
+
     const companiesRes = await db.query(`
         SELECT handle,
                name,
@@ -70,7 +73,8 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        ORDER BY name`);
+        ${whereClause}
+        ORDER BY name`, values);
     return companiesRes.rows;
   }
 

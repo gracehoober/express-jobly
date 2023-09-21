@@ -46,7 +46,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
         minEmployees: ["num_employees", ">="],
         maxEmployees: ["num_employees", "<="]
       }
-      
+
  *  Returns
  *    {
       whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
@@ -60,12 +60,28 @@ function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
    return { whereClause: "", value: [] };
   }
 
+  console.log("OBJ Values",Object.values(dataToUpdate));
+
   const keys = Object.keys(dataToUpdate);
+
+  if (dataToUpdate["nameLike"]) {
+    const initialVal = dataToUpdate["nameLike"];
+    const processedVal = "%" + initialVal + "%";
+    dataToUpdate["nameLike"] = processedVal;
+  }
+
 
   // {nameLike: 'apple', ...} => ['name ILIKE $1', ...]
   const cols = keys.map(
     (colName, idx) => `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
 
+   const sqlStatementInfo = {
+      whereClause: "WHERE " + cols.join(" AND "),
+      values: Object.values(dataToUpdate),
+    };
+
+    // const obj = { foo: "bar", baz: 42 };
+    // console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
 
   return {
     whereClause: "WHERE " + cols.join(" AND "),

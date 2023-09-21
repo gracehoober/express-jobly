@@ -5,8 +5,7 @@
     "properties": {
         "nameLike": {
             "type": "string",
-            "minLength": 1,
-            "maxLength": 30
+            "minLength": 1
         },
         "minEmployees": {
             "type": "string",
