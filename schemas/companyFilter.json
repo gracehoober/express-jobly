@@ -9,18 +9,15 @@
             "maxLength": 30
         },
         "minEmployees": {
-            "type": "integer",
+            "type": "string",
             "minimum": 0
         },
         "maxEmployees": {
-            "type": "integer",
+            "type": "string",
             "minimum": 0
         }
     },
     "additionalProperties": false,
-    "required": [
-        "nameLike",
-        "maxEmployees",
-        "minEmployees"
-    ]
+    "required": []
+
 }
