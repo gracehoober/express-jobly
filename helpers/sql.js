@@ -19,14 +19,12 @@ const { BadRequestError } = require("../expressError");
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
 
-  console.log("keys", keys);
-  console.log("ERROR!",new BadRequestError("No data"));
 
   if (keys.length === 0) throw new BadRequestError("No data");
 
   // {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
   const cols = keys.map((colName, idx) =>
-      `"${jsToSql[colName] || colName}"=$${idx + 1}`,
+    `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );
 
   return {
@@ -35,28 +33,27 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
+//FIXME: make sure we have a schema to validate inputs, make a doc string
+/**MAKE A DOC STRING */
 
 function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
-  const keys = Object.keys(dataToUpdate);
 
-  console.log("keys", keys);
-
-  // No error if no keys, just want to return empty (or none).
-  if (keys.length === 0) return {};
-
-  for (const key of keys) {
-    console.log("Key", key, "Value", jsToSql[key]);
+  if (!dataToUpdate || dataToUpdate.length === 0){
+   return { whereClause: "", value: [] };
   }
 
-  // {nameLike: 'apple', ...} => ['name ILIKE apple', ...]
-  const cols = keys.map((colName, idx) => `"${jsToSql[colName]} ${jsToSql[colName]}"=$${idx + 1}`)
+  const keys = Object.keys(dataToUpdate);
+
+  // {nameLike: 'apple', ...} => ['name ILIKE $1', ...]
+  const cols = keys.map(
+    (colName, idx) => `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
+
 
   return {
-    setCols: "WHERE " + cols.join(" AND"),
+    whereClause: "WHERE " + cols.join(" AND "),
     values: Object.values(dataToUpdate),
   };
 }
-
 
 
 module.exports = { sqlForPartialUpdate, sqlForFilteringCompanies };

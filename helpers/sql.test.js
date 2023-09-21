@@ -3,7 +3,7 @@
 const { BadRequestError } = require("../expressError");
 const { sqlForPartialUpdate, sqlForFilteringCompanies } = require("./sql");
 
-
+/** Tests for sqlForPartialUpdate */
 describe("Partial Update: All types of requests return expected value", function () {
   test("works: Good data provided", function () {
     const response = sqlForPartialUpdate(
@@ -46,66 +46,71 @@ describe("Partial Update: Incorrect inputs return expected responses", function 
 });
 
 
-////////
-
+//** Tests for sqlForFilteringCompanies */
 
 describe("Get All: Good filtering parameters passed (or none) return expected value", function () {
   test("works: One correct filtering criteria provided", function () {
     const response = sqlForFilteringCompanies(
       { nameLike: "apple" },
-      { nameLike, minEmployees, maxEmployees }
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
     );
 
-    expect(response).toEqual("WHERE name ILIKE %apple%");
+    expect(response).toEqual({
+      whereClause: 'WHERE name ILIKE $1',
+      values: ["apple"]
+    });
   });
 
   test("works: Two correct filtering criteria provided", function () {
     const response = sqlForFilteringCompanies(
       { nameLike: "apple", minEmployees: 10 },
-      { nameLike, minEmployees, maxEmployees }
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
     );
 
-    expect(response).toEqual("WHERE name ILIKE %apple% AND num_employees >= 10");
+    expect(response).toEqual({
+      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
+      values: ["apple", 10]
+    });
   });
 
   test("works: Three correct filtering criteria provided", function () {
     const response = sqlForFilteringCompanies(
       { nameLike: "apple", minEmployees: 10, maxEmployees: 1000 },
-      { nameLike, minEmployees, maxEmployees }
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
     );
 
-    expect(response).toEqual("WHERE name ILIKE %apple% AND num_employees >= 10 AND num_employees <= 1000");
+    expect(response).toEqual({
+      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3',
+      values: ["apple", 10, 1000]
+    });
   });
 
   test("works: No filtering criteria provided", function () {
     const response = sqlForFilteringCompanies(
       {},
-      { nameLike, minEmployees, maxEmployees }
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
     );
 
-    expect(response).toEqual("");
+    expect(response).toEqual({ whereClause: "", value: [] });
   });
 });
 
 
-// describe("Partial Update: Incorrect inputs return expected responses", function () {
-//   test("Error expected: Empty data provided", function () {
-
-//     expect(() => sqlForPartialUpdate(
-//       {},
-//       {
-//         firstName: "first_name",
-//         lastName: "last_name",
-//         isAdmin: "is_admin",
-//       }
-//     )
-//     ).toThrow(BadRequestError);
-
-//   });
-
-//   test("Partial Update: Error expected: No data provided", function () {
-//     expect(() => sqlForPartialUpdate()).toThrow(TypeError);
-//   });
-// });
 
 

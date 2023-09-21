@@ -60,8 +60,8 @@ class Company {
       data,
       {
         nameLike: ["name" ,"ILIKE"],
-        min_employees: ["num_employees", ">="],
-        max_employees: ["num_employees", "<="]
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
       });
     const companiesRes = await db.query(`
         SELECT handle,
