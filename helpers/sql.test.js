@@ -1,7 +1,7 @@
 "use strict";
 
 const { BadRequestError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFilteringCompanies } = require("./sql");
+const { sqlForPartialUpdate } = require("./sql");
 
 /** Tests for sqlForPartialUpdate */
 describe("Partial Update: All types of requests return expected value", function () {
@@ -44,73 +44,3 @@ describe("Partial Update: Incorrect inputs return expected responses", function 
     expect(() => sqlForPartialUpdate()).toThrow(TypeError);
   });
 });
-
-
-//** Tests for sqlForFilteringCompanies */
-
-describe("Get All: Good filtering parameters passed (or none) return expected value", function () {
-  test("works: One correct filtering criteria provided", function () {
-    const response = sqlForFilteringCompanies(
-      { nameLike: "apple" },
-      {
-        nameLike: ["name", "ILIKE"],
-        minEmployees: ["num_employees", ">="],
-        maxEmployees: ["num_employees", "<="]
-      }
-    );
-
-    expect(response).toEqual({
-      whereClause: 'WHERE name ILIKE $1',
-      values: ["%apple%"]
-    });
-  });
-
-  test("works: Two correct filtering criteria provided", function () {
-    const response = sqlForFilteringCompanies(
-      { nameLike: "apple", minEmployees: 10 },
-      {
-        nameLike: ["name", "ILIKE"],
-        minEmployees: ["num_employees", ">="],
-        maxEmployees: ["num_employees", "<="]
-      }
-    );
-
-    expect(response).toEqual({
-      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
-      values: ["%apple%", 10]
-    });
-  });
-
-  test("works: Three correct filtering criteria provided", function () {
-    const response = sqlForFilteringCompanies(
-      { nameLike: "apple", minEmployees: 10, maxEmployees: 1000 },
-      {
-        nameLike: ["name", "ILIKE"],
-        minEmployees: ["num_employees", ">="],
-        maxEmployees: ["num_employees", "<="]
-      }
-    );
-
-    expect(response).toEqual({
-      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3',
-      values: ["%apple%", 10, 1000]
-    });
-  });
-
-  test("works: No filtering criteria provided", function () {
-    const response = sqlForFilteringCompanies(
-      {},
-      {
-        nameLike: ["name", "ILIKE"],
-        minEmployees: ["num_employees", ">="],
-        maxEmployees: ["num_employees", "<="]
-      }
-    );
-
-    expect(response).toEqual({ whereClause: "", value: [] });
-  });
-});
-
-
-
-

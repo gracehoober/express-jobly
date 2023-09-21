@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForFilteringCompanies } = require("../helpers/sql");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -51,20 +51,18 @@ class Company {
   }
 
   /** Find all companies.
-   *
+   * Takes optional input of data like: { nameLike: "apple", minEmployees: 10 }
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
   static async findAll(data) {
-    const { whereClause, values } = sqlForFilteringCompanies(
+    const { whereClause, values } = this.sqlForFilteringCompanies(
       data,
       {
         nameLike: ["name", "ILIKE"],
         minEmployees: ["num_employees", ">="],
         maxEmployees: ["num_employees", "<="]
       });
-
-    console.log("Where Clauses", whereClause, "values", values);
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -116,6 +114,7 @@ class Company {
    */
 
   static async update(handle, data) {
+
     const { setCols, values } = sqlForPartialUpdate(
       data,
       {
@@ -157,6 +156,50 @@ class Company {
 
     if (!company) throw new NotFoundError(`No company: ${handle}`);
   }
+
+
+  /** Translates input information (from data and jsToSql) into SQL like syntax
+ * for database update.
+ *
+ * data can be like  { nameLike: "apple", minEmployees: 10 },
+ *  but can have an additional property called maxEmployees.
+ *
+ * jsToSql is {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
+
+ *  Returns
+ *    {
+      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
+      values: ["apple", 10]
+    }
+ */
+  static sqlForFilteringCompanies(dataToUpdate, jsToSql) {
+
+    if (!dataToUpdate || Object.keys(dataToUpdate).length === 0) {
+      return { whereClause: "", value: [] };
+    }
+
+    const keys = Object.keys(dataToUpdate);
+
+    if (dataToUpdate["nameLike"]) {
+      const initialVal = dataToUpdate["nameLike"];
+      const processedVal = "%" + initialVal + "%";
+      dataToUpdate["nameLike"] = processedVal;
+    }
+
+    // {nameLike: 'apple', ...} => ['name ILIKE $1', ...]
+    const cols = keys.map(
+      (colName, idx) => `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
+
+    return {
+      whereClause: "WHERE " + cols.join(" AND "),
+      values: Object.values(dataToUpdate),
+    };
+  }
+
 }
 
 

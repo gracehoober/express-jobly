@@ -2,6 +2,7 @@
 
 const { BadRequestError } = require("../expressError");
 
+
 /** Translates input information (from data and jsToSql) into SQL like syntax
  * for database update.
  *
@@ -33,59 +34,48 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-/** Translates input information (from data and jsToSql) into SQL like syntax
- * for database update.
- *
- * data can be like  { nameLike: "apple", minEmployees: 10 },
- *  but can have an additional property called maxEmployees.
- *
- * jsToSql is {
-        nameLike: ["name", "ILIKE"],
-        minEmployees: ["num_employees", ">="],
-        maxEmployees: ["num_employees", "<="]
-      }
+// /** Translates input information (from data and jsToSql) into SQL like syntax
+//  * for database update.
+//  *
+//  * data can be like  { nameLike: "apple", minEmployees: 10 },
+//  *  but can have an additional property called maxEmployees.
+//  *
+//  * jsToSql is {
+//         nameLike: ["name", "ILIKE"],
+//         minEmployees: ["num_employees", ">="],
+//         maxEmployees: ["num_employees", "<="]
+//       }
 
- *  Returns
- *    {
-      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
-      values: ["apple", 10]
-    }
- */
+//  *  Returns
+//  *    {
+//       whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
+//       values: ["apple", 10]
+//     }
+//  */
+// // TODO: Move this into model function (company.js)
+// function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
 
-function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
+//   if (!dataToUpdate || Object.keys(dataToUpdate).length === 0) {
+//     return { whereClause: "", value: [] };
+//   }
 
-  if (!dataToUpdate || Object.keys(dataToUpdate).length === 0){
-   return { whereClause: "", value: [] };
-  }
+//   const keys = Object.keys(dataToUpdate);
 
-  //console.log("OBJ Values",Object.values(dataToUpdate));
+//   if (dataToUpdate["nameLike"]) {
+//     const initialVal = dataToUpdate["nameLike"];
+//     const processedVal = "%" + initialVal + "%";
+//     dataToUpdate["nameLike"] = processedVal;
+//   }
 
-  const keys = Object.keys(dataToUpdate);
+//   // {nameLike: 'apple', ...} => ['name ILIKE $1', ...]
+//   const cols = keys.map(
+//     (colName, idx) => `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
 
-  if (dataToUpdate["nameLike"]) {
-    const initialVal = dataToUpdate["nameLike"];
-    const processedVal = "%" + initialVal + "%";
-    dataToUpdate["nameLike"] = processedVal;
-  }
-
-
-  // {nameLike: 'apple', ...} => ['name ILIKE $1', ...]
-  const cols = keys.map(
-    (colName, idx) => `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
-
-   const sqlStatementInfo = {
-      whereClause: "WHERE " + cols.join(" AND "),
-      values: Object.values(dataToUpdate),
-    };
-
-    // const obj = { foo: "bar", baz: 42 };
-    // console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]
-
-  return {
-    whereClause: "WHERE " + cols.join(" AND "),
-    values: Object.values(dataToUpdate),
-  };
-}
+//   return {
+//     whereClause: "WHERE " + cols.join(" AND "),
+//     values: Object.values(dataToUpdate),
+//   };
+// }
 
 
-module.exports = { sqlForPartialUpdate, sqlForFilteringCompanies };
+module.exports = { sqlForPartialUpdate };

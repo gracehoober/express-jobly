@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -140,9 +140,14 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -196,20 +201,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -220,6 +228,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
 &nbsp;
 const { BadRequestError } = require("../expressError");
+&nbsp;
 &nbsp;
 /** Translates input information (from data and jsToSql) into SQL like syntax
  * for database update.
@@ -252,8 +261,6 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 &nbsp;
-//FIXME: make sure we have a schema to validate inputs
-&nbsp;
 /** Translates input information (from data and jsToSql) into SQL like syntax
  * for database update.
  *
@@ -265,26 +272,31 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
         minEmployees: ["num_employees", "&gt;="],
         maxEmployees: ["num_employees", "&lt;="]
       }
-      
+&nbsp;
  *  Returns
  *    {
       whereClause: 'WHERE name ILIKE $1 AND num_employees &gt;= $2',
       values: ["apple", 10]
     }
  */
-&nbsp;
+// TODO: Move this into model function (company.js)
 function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
 &nbsp;
-  if (!dataToUpdate || dataToUpdate.length === 0){
-   return { whereClause: "", value: [] };
+  if (!dataToUpdate || Object.keys(dataToUpdate).length === 0) {
+    return { whereClause: "", value: [] };
   }
 &nbsp;
   const keys = Object.keys(dataToUpdate);
 &nbsp;
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (dataToUpdate["nameLike"]) {
+    const initialVal = dataToUpdate["nameLike"];
+    const processedVal = "%" + initialVal + "%";
+    dataToUpdate["nameLike"] = processedVal;
+  }
+&nbsp;
   // {nameLike: 'apple', ...} =&gt; ['name ILIKE $1', ...]
   const cols = keys.map(
     (colName, idx) =&gt; `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
-&nbsp;
 &nbsp;
   return {
     whereClause: "WHERE " + cols.join(" AND "),
@@ -301,7 +313,7 @@ module.exports = { sqlForPartialUpdate, sqlForFilteringCompanies };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-21T16:48:42.616Z
+                at 2023-09-21T21:16:48.814Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

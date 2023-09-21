@@ -111,7 +111,7 @@ describe("GET /companies", function () {
     }]);
   });
 });
-
+// TODO: (Low priority) - Test for provided field that should not be provided
 describe("GET /companies", function () {
   test("filters do not work", async function () {
     const resp = await request(app).get("/companies").query(

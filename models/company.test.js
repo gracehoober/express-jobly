@@ -87,6 +87,46 @@ describe("findAll", function () {
   });
 });
 
+describe("findAll", function () {
+  test("works: filter for some fields", async function () {
+    let companies = await Company.findAll({ nameLike: "c", minEmployees: 2 });
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      },
+    ]);
+  });
+});
+
+
+describe("findAll", function () {
+  test("works: filter for all possible fields", async function () {
+    let companies = await Company.findAll({ nameLike: "c", minEmployees: 2, maxEmployees: 2 });
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      }
+    ]);
+  });
+});
+
+
+
 /************************************** get */
 
 describe("get", function () {
@@ -206,3 +246,75 @@ describe("remove", function () {
     }
   });
 });
+
+
+
+
+//** Tests for sqlForFilteringCompanies */
+
+describe("Get All: Good filtering parameters passed (or none) return expected value", function () {
+  test("works: One correct filtering criteria provided", function () {
+    const response = Company.sqlForFilteringCompanies(
+      { nameLike: "apple" },
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
+    );
+
+    expect(response).toEqual({
+      whereClause: 'WHERE name ILIKE $1',
+      values: ["%apple%"]
+    });
+  });
+
+  test("works: Two correct filtering criteria provided", function () {
+    const response = Company.sqlForFilteringCompanies(
+      { nameLike: "apple", minEmployees: 10 },
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
+    );
+
+    expect(response).toEqual({
+      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
+      values: ["%apple%", 10]
+    });
+  });
+
+  test("works: Three correct filtering criteria provided", function () {
+    const response = Company.sqlForFilteringCompanies(
+      { nameLike: "apple", minEmployees: 10, maxEmployees: 1000 },
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
+    );
+
+    expect(response).toEqual({
+      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3',
+      values: ["%apple%", 10, 1000]
+    });
+  });
+
+  test("works: No filtering criteria provided", function () {
+    const response = Company.sqlForFilteringCompanies(
+      {},
+      {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
+    );
+
+    expect(response).toEqual({ whereClause: "", value: [] });
+  });
+});
+
+
+
+
