@@ -61,7 +61,7 @@ describe("Get All: Good filtering parameters passed (or none) return expected va
 
     expect(response).toEqual({
       whereClause: 'WHERE name ILIKE $1',
-      values: ["apple"]
+      values: ["%apple%"]
     });
   });
 
@@ -77,7 +77,7 @@ describe("Get All: Good filtering parameters passed (or none) return expected va
 
     expect(response).toEqual({
       whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
-      values: ["apple", 10]
+      values: ["%apple%", 10]
     });
   });
 
@@ -93,7 +93,7 @@ describe("Get All: Good filtering parameters passed (or none) return expected va
 
     expect(response).toEqual({
       whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2 AND num_employees <= $3',
-      values: ["apple", 10, 1000]
+      values: ["%apple%", 10, 1000]
     });
   });
 

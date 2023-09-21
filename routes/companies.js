@@ -13,6 +13,7 @@ const companyNewSchema = require("../schemas/companyNew.json");
 const companyUpdateSchema = require("../schemas/companyUpdate.json");
 const companyFilterSchema = require("../schemas/companyFilter.json");
 
+const prepareData = require("../helpers/utils")
 const router = new express.Router();
 
 
@@ -52,31 +53,11 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  console.log("Req.query", req.query, typeof req.query);
 
-  const data = req.query;
-
-  if (data.minEmployees) {
-    data.minEmployees = Number(data.minEmployees);
-  }
-
-  if (data.maxEmployees) {
-    data.maxEmployees = Number(data.maxEmployees);
-  }
-
-  if (isNaN(data.minEmployees) || isNaN(data.maxEmployees)) {
-    throw new Error("ErRRRorrr");
-  }
-
-  if (data.minEmployees > data.maxEmployees) {
-    throw new Error("ALSO Errorrrrr");
-  }
-
-  console.log("data", data);
-
+  const data = prepareData(req.query);
 
   const validator = jsonschema.validate(
-    req.query,
+    data,
     companyFilterSchema,
     { required: true }
   );
@@ -85,7 +66,7 @@ router.get("/", async function (req, res, next) {
     throw new BadRequestError(errs);
   }
 
-  const companies = await Company.findAll(req.query);
+  const companies = await Company.findAll(data);
   return res.json({ companies });
 });
 

@@ -33,8 +33,6 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-//FIXME: make sure we have a schema to validate inputs
-
 /** Translates input information (from data and jsToSql) into SQL like syntax
  * for database update.
  *
@@ -56,11 +54,11 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
 function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
 
-  if (!dataToUpdate || dataToUpdate.length === 0){
+  if (!dataToUpdate || Object.keys(dataToUpdate).length === 0){
    return { whereClause: "", value: [] };
   }
 
-  console.log("OBJ Values",Object.values(dataToUpdate));
+  //console.log("OBJ Values",Object.values(dataToUpdate));
 
   const keys = Object.keys(dataToUpdate);
 

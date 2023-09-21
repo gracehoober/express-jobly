@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -56,15 +56,15 @@ class Company {
    * */
 
   static async findAll(data) {
-    const {whereClause, values} = sqlForFilteringCompanies(
+    const { whereClause, values } = sqlForFilteringCompanies(
       data,
       {
-        nameLike: ["name" ,"ILIKE"],
+        nameLike: ["name", "ILIKE"],
         minEmployees: ["num_employees", ">="],
         maxEmployees: ["num_employees", "<="]
       });
 
-      console.log("Where Clauses", whereClause, "values", values);
+    console.log("Where Clauses", whereClause, "values", values);
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -117,11 +117,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `
