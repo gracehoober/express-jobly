@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/29</span>
+                <span class='fraction'>30/30</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/26</span>
+                <span class='fraction'>27/27</span>
             </div>
         
             
@@ -211,7 +211,18 @@
 <a name='L146'></a><a href='#L146'>146</a>
 <a name='L147'></a><a href='#L147'>147</a>
 <a name='L148'></a><a href='#L148'>148</a>
-<a name='L149'></a><a href='#L149'>149</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -231,7 +242,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,6 +267,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
@@ -268,7 +280,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -289,7 +308,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -331,6 +349,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -350,7 +373,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -363,7 +385,7 @@
 &nbsp;
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFilteringCompanies } = require("../helpers/sql");
 &nbsp;
 /** Related functions for companies. */
 &nbsp;
@@ -378,26 +400,27 @@ class Company {
    * */
 &nbsp;
   static async create({ handle, name, description, numEmployees, logoUrl }) {
-    const duplicateCheck = await db.query(
-        `SELECT handle
-           FROM companies
-           WHERE handle = $1`,
-        [handle]);
+    const duplicateCheck = await db.query(`
+        SELECT handle
+        FROM companies
+        WHERE handle = $1`, [handle]);
 &nbsp;
     if (duplicateCheck.rows[0])
       throw new BadRequestError(`Duplicate company: ${handle}`);
 &nbsp;
-    const result = await db.query(
-        `INSERT INTO companies(
-          handle,
-          name,
-          description,
-          num_employees,
-          logo_url)
-           VALUES
-             ($1, $2, $3, $4, $5)
-           RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`,
-        [
+    const result = await db.query(`
+                INSERT INTO companies (handle,
+                                       name,
+                                       description,
+                                       num_employees,
+                                       logo_url)
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING
+                    handle,
+                    name,
+                    description,
+                    num_employees AS "numEmployees",
+                    logo_url AS "logoUrl"`, [
           handle,
           name,
           description,
@@ -415,15 +438,22 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 &nbsp;
-  static async findAll() {
-    const companiesRes = await db.query(
-        `SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`);
+  static async findAll(data) {
+    const { setCols, values } = sqlForFilteringCompanies(
+      data,
+      {
+        nameLike: ["name" ,"ILIKE"],
+        minEmployees: ["num_employees", "&gt;="],
+        maxEmployees: ["num_employees", "&lt;="]
+      });
+    const companiesRes = await db.query(`
+        SELECT handle,
+               name,
+               description,
+               num_employees AS "numEmployees",
+               logo_url      AS "logoUrl"
+        FROM companies
+        ORDER BY name`);
     return companiesRes.rows;
   }
 &nbsp;
@@ -436,15 +466,14 @@ class Company {
    **/
 &nbsp;
   static async get(handle) {
-    const companyRes = await db.query(
-        `SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-           FROM companies
-           WHERE handle = $1`,
-        [handle]);
+    const companyRes = await db.query(`
+        SELECT handle,
+               name,
+               description,
+               num_employees AS "numEmployees",
+               logo_url      AS "logoUrl"
+        FROM companies
+        WHERE handle = $1`, [handle]);
 &nbsp;
     const company = companyRes.rows[0];
 &nbsp;
@@ -475,10 +504,15 @@ class Company {
     const handleVarIdx = "$" + (values.length + 1);
 &nbsp;
     const querySql = `
-      UPDATE companies
-      SET ${setCols}
+        UPDATE companies
+        SET ${setCols}
         WHERE handle = ${handleVarIdx}
-        RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`;
+        RETURNING
+            handle,
+            name,
+            description,
+            num_employees AS "numEmployees",
+            logo_url AS "logoUrl"`;
     const result = await db.query(querySql, [...values, handle]);
     const company = result.rows[0];
 &nbsp;
@@ -493,12 +527,11 @@ class Company {
    **/
 &nbsp;
   static async remove(handle) {
-    const result = await db.query(
-        `DELETE
-           FROM companies
-           WHERE handle = $1
-           RETURNING handle`,
-        [handle]);
+    const result = await db.query(`
+        DELETE
+        FROM companies
+        WHERE handle = $1
+        RETURNING handle`, [handle]);
     const company = result.rows[0];
 &nbsp;
     if (!company) throw new NotFoundError(`No company: ${handle}`);
@@ -514,7 +547,7 @@ module.exports = Company;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-10T23:53:54.564Z
+                at 2023-09-21T16:48:42.616Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

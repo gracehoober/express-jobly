@@ -33,8 +33,26 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-//FIXME: make sure we have a schema to validate inputs, make a doc string
-/**MAKE A DOC STRING */
+//FIXME: make sure we have a schema to validate inputs
+
+/** Translates input information (from data and jsToSql) into SQL like syntax
+ * for database update.
+ *
+ * data can be like  { nameLike: "apple", minEmployees: 10 },
+ *  but can have an additional property called maxEmployees.
+ *
+ * jsToSql is {
+        nameLike: ["name", "ILIKE"],
+        minEmployees: ["num_employees", ">="],
+        maxEmployees: ["num_employees", "<="]
+      }
+      
+ *  Returns
+ *    {
+      whereClause: 'WHERE name ILIKE $1 AND num_employees >= $2',
+      values: ["apple", 10]
+    }
+ */
 
 function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
 
