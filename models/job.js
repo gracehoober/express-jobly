@@ -51,7 +51,7 @@ class Job {
       data,
       {
         title: ["title", "ILIKE"],
-        minSalary: ["min_salary", ">="],
+        minSalary: ["salary", ">="],
         hasEquity: ["equity", ">="]
       });
 
@@ -188,6 +188,11 @@ class Job {
     const cols = keys.map(
       (colName, idx) => `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
 
+      console.log({
+        whereClause: "WHERE " + cols.join(" AND "),
+        values: Object.values(dataToUpdate),
+      })
+
     return {
       whereClause: "WHERE " + cols.join(" AND "),
       values: Object.values(dataToUpdate),
@@ -197,4 +202,4 @@ class Job {
 }
 
 
-module.exports = Company;
+module.exports = Job;
