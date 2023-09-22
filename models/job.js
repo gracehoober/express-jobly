@@ -52,8 +52,10 @@ class Job {
       {
         title: ["title", "ILIKE"],
         minSalary: ["salary", ">="],
-        hasEquity: ["equity", ">="]
+        hasEquity: ["equity", ">"]
       });
+
+      console.log("whereClause, values", whereClause, values);
 
     const jobsRes = await db.query(`
         SELECT title,
@@ -171,9 +173,13 @@ class Job {
       return { whereClause: "", value: [] };
     }
 
-    if (dataToUpdate["hasEquity"] && dataToUpdate["hasEquity"] === false) {
-      delete dataToUpdate["hasEquity"];
-    }
+    // if (dataToUpdate["hasEquity"] && dataToUpdate["hasEquity"] === false) {
+    //   delete dataToUpdate["hasEquity"];
+    // }
+
+    // if (dataToUpdate["hasEquity"] && dataToUpdate["hasEquity"] === true) {
+    //   dataToUpdate["hasEquity"] = 0;
+    // }
 
     const keys = Object.keys(dataToUpdate);
 
