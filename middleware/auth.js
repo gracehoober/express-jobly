@@ -45,10 +45,9 @@ function ensureLoggedIn(req, res, next) {
  *
  * If not, raises Unauthorized.
  */
-// TODO: Make this function also check if user is logged in -> allows us to
-//          not include ensureLoggedIn in every route.
+
 function ensureIsAdmin(req, res, next) {
-  if (res.locals.user?.isAdmin === true) return next();
+  if ((res.locals.user?.isAdmin === true) && res.locals.user?.username) return next();
   throw new UnauthorizedError();
 }
 
@@ -57,9 +56,10 @@ function ensureIsAdmin(req, res, next) {
  *
  * If not, raises Unauthorized.
  */
-// TODO: Make sure to also check for logged in here.
+
 function ensureIsAdminOrCurrentUser(req, res, next) {
-  if ((res.locals.user?.isAdmin === true) || res.locals.user?.username === req.params.username) return next();
+  if (res.locals.user?.username &&
+    ((res.locals.user?.isAdmin === true) || (res.locals.user?.username === req.params.username))) return next();
   throw new UnauthorizedError();
 }
 

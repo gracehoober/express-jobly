@@ -5,18 +5,19 @@ const { UnauthorizedError } = require("../expressError");
 const {
   authenticateJWT,
   ensureLoggedIn,
+  ensureIsAdmin,
+  ensureIsAdminOrCurrentUser
 } = require("./auth");
 
 
 const { SECRET_KEY } = require("../config");
+const { u1Token } = require("../routes/_testCommon");
 const testJwt = jwt.sign({ username: "test", isAdmin: false }, SECRET_KEY);
 const badJwt = jwt.sign({ username: "test", isAdmin: false }, "wrong");
 
 function next(err) {
   if (err) throw new Error("Got error from middleware");
 }
-
-// TODO: Add tests for auth middleware.
 
 
 describe("authenticateJWT", function () {
@@ -60,13 +61,76 @@ describe("ensureLoggedIn", function () {
     const req = {};
     const res = { locals: {} };
     expect(() => ensureLoggedIn(req, res, next))
-        .toThrow(UnauthorizedError);
+      .toThrow(UnauthorizedError);
   });
 
   test("unauth if no valid login", function () {
     const req = {};
-    const res = { locals: { user: { } } };
+    const res = { locals: { user: {} } };
     expect(() => ensureLoggedIn(req, res, next))
-        .toThrow(UnauthorizedError);
+      .toThrow(UnauthorizedError);
+  });
+});
+
+describe("ensureIsAdmin", function () {
+  test("works", function () {
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: true } } };
+    ensureIsAdmin(req, res, next);
+  });
+
+  test("not an admin", function () {
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    expect(() => ensureIsAdmin(req, res, next))
+      .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if no login", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureIsAdmin(req, res, next))
+      .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if no valid login", function () {
+    const req = {};
+    const res = { locals: { user: {} } };
+    expect(() => ensureIsAdmin(req, res, next))
+      .toThrow(UnauthorizedError);
+  });
+});
+
+describe("ensureIsAdminOrCurrentUser", function () {
+  test("works", function () {
+    const req = {username: "test"};
+    const res = { locals: { user: { username: "test", isAdmin: true } } };
+    ensureIsAdminOrCurrentUser(req, res, next);
+  });
+
+  test("not an admin", function () {
+    const req = { headers: { authorization: `Bearer ${u1Token}` }, username: "test" };
+
+    const res = { locals: { user: { username: "test2", isAdmin: false } } };
+    console.log("res.locals", res.locals)
+    console.log(res.locals.user.username, "username")
+    console.log(res.locals.user.isAdmin, "isAdmin")
+    console.log(req.username, "req username")
+    expect(() => ensureIsAdminOrCurrentUser(req, res, next))
+      .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if no login", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureIsAdminOrCurrentUser(req, res, next))
+      .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if no valid login", function () {
+    const req = {};
+    const res = { locals: { user: {} } };
+    expect(() => ensureIsAdminOrCurrentUser(req, res, next))
+      .toThrow(UnauthorizedError);
   });
 });

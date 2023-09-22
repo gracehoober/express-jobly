@@ -27,7 +27,7 @@ const router = express.Router();
  * Authorization required: admin
  **/
 
-router.post("/", ensureLoggedIn, ensureIsAdmin, async function (req, res, next) {
+router.post("/", ensureIsAdmin, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     userNewSchema,
@@ -51,7 +51,7 @@ router.post("/", ensureLoggedIn, ensureIsAdmin, async function (req, res, next) 
  * Authorization required: admin
  **/
 
-router.get("/", ensureLoggedIn, ensureIsAdmin, async function (req, res, next) {
+router.get("/", ensureIsAdmin, async function (req, res, next) {
   const users = await User.findAll();
   return res.json({ users });
 });
@@ -101,7 +101,7 @@ router.patch("/:username", ensureIsAdminOrCurrentUser, async function (req, res,
  * Authorization required: admin or same user
  **/
 
-router.delete("/:username", ensureLoggedIn, ensureIsAdminOrCurrentUser, async function (req, res, next) {
+router.delete("/:username", ensureIsAdminOrCurrentUser, async function (req, res, next) {
   await User.remove(req.params.username);
   return res.json({ deleted: req.params.username });
 });
