@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/18</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
+                <span class="quiet">Branches</span>
                 <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>2/2</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -164,17 +164,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,23 +201,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -261,51 +261,51 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 &nbsp;
-/** Translates input information (from data and jsToSql) into SQL like syntax
- * for database update.
- *
- * data can be like  { nameLike: "apple", minEmployees: 10 },
- *  but can have an additional property called maxEmployees.
- *
- * jsToSql is {
-        nameLike: ["name", "ILIKE"],
-        minEmployees: ["num_employees", "&gt;="],
-        maxEmployees: ["num_employees", "&lt;="]
-      }
+// /** Translates input information (from data and jsToSql) into SQL like syntax
+//  * for database update.
+//  *
+//  * data can be like  { nameLike: "apple", minEmployees: 10 },
+//  *  but can have an additional property called maxEmployees.
+//  *
+//  * jsToSql is {
+//         nameLike: ["name", "ILIKE"],
+//         minEmployees: ["num_employees", "&gt;="],
+//         maxEmployees: ["num_employees", "&lt;="]
+//       }
 &nbsp;
- *  Returns
- *    {
-      whereClause: 'WHERE name ILIKE $1 AND num_employees &gt;= $2',
-      values: ["apple", 10]
-    }
- */
-// TODO: Move this into model function (company.js)
-function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
+//  *  Returns
+//  *    {
+//       whereClause: 'WHERE name ILIKE $1 AND num_employees &gt;= $2',
+//       values: ["apple", 10]
+//     }
+//  */
+// // TODO: Move this into model function (company.js)
+// function sqlForFilteringCompanies(dataToUpdate, jsToSql) {
 &nbsp;
-  if (!dataToUpdate || Object.keys(dataToUpdate).length === 0) {
-    return { whereClause: "", value: [] };
-  }
+//   if (!dataToUpdate || Object.keys(dataToUpdate).length === 0) {
+//     return { whereClause: "", value: [] };
+//   }
 &nbsp;
-  const keys = Object.keys(dataToUpdate);
+//   const keys = Object.keys(dataToUpdate);
 &nbsp;
-  <span class="missing-if-branch" title="else path not taken" >E</span>if (dataToUpdate["nameLike"]) {
-    const initialVal = dataToUpdate["nameLike"];
-    const processedVal = "%" + initialVal + "%";
-    dataToUpdate["nameLike"] = processedVal;
-  }
+//   if (dataToUpdate["nameLike"]) {
+//     const initialVal = dataToUpdate["nameLike"];
+//     const processedVal = "%" + initialVal + "%";
+//     dataToUpdate["nameLike"] = processedVal;
+//   }
 &nbsp;
-  // {nameLike: 'apple', ...} =&gt; ['name ILIKE $1', ...]
-  const cols = keys.map(
-    (colName, idx) =&gt; `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
+//   // {nameLike: 'apple', ...} =&gt; ['name ILIKE $1', ...]
+//   const cols = keys.map(
+//     (colName, idx) =&gt; `${jsToSql[colName][0]} ${jsToSql[colName][1]} $${idx + 1}`);
 &nbsp;
-  return {
-    whereClause: "WHERE " + cols.join(" AND "),
-    values: Object.values(dataToUpdate),
-  };
-}
+//   return {
+//     whereClause: "WHERE " + cols.join(" AND "),
+//     values: Object.values(dataToUpdate),
+//   };
+// }
 &nbsp;
 &nbsp;
-module.exports = { sqlForPartialUpdate, sqlForFilteringCompanies };
+module.exports = { sqlForPartialUpdate };
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -313,7 +313,7 @@ module.exports = { sqlForPartialUpdate, sqlForFilteringCompanies };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-21T21:16:48.814Z
+                at 2023-09-22T00:25:05.514Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
