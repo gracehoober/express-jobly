@@ -109,13 +109,8 @@ describe("ensureIsAdminOrCurrentUser", function () {
   });
 
   test("not an admin", function () {
-    const req = { headers: { authorization: `Bearer ${u1Token}` }, username: "test" };
-
+    const req = {params: {username: "test"}};
     const res = { locals: { user: { username: "test2", isAdmin: false } } };
-    console.log("res.locals", res.locals)
-    console.log(res.locals.user.username, "username")
-    console.log(res.locals.user.isAdmin, "isAdmin")
-    console.log(req.username, "req username")
     expect(() => ensureIsAdminOrCurrentUser(req, res, next))
       .toThrow(UnauthorizedError);
   });
