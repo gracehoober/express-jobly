@@ -23,7 +23,7 @@ afterAll(commonAfterAll);
 /************************************** POST /users */
 
 describe("POST /users", function () {
-  test("works for users: create non-admin", async function () {
+  test("works for users: unauth - user", async function () {
     const resp = await request(app)
       .post("/users")
       .send({
@@ -38,7 +38,7 @@ describe("POST /users", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("works for users: create admin", async function () {
+  test("works for users: create - ADMIN", async function () {
     const resp = await request(app)
       .post("/users")
       .send({
@@ -153,7 +153,7 @@ describe("GET /users", function () {
 /************************************** GET /users/:username */
 
 describe("GET /users/:username", function () {
-  test("works for users", async function () {
+  test("works for users - ADMIN", async function () {
     const resp = await request(app)
       .get(`/users/u1`)
       .set("authorization", `Bearer ${u2Token}`);
@@ -168,7 +168,7 @@ describe("GET /users/:username", function () {
     });
   });
 
-  test("works for users to find themself", async function () {
+  test("works for users to find themself - USER", async function () {
     const resp = await request(app)
       .get(`/users/u1`)
       .set("authorization", `Bearer ${u1Token}`);
@@ -182,21 +182,21 @@ describe("GET /users/:username", function () {
       },
     });
   });
-
-  test("unauth for anon", async function () {
+  // TODO: Add test for invalid (non-admin) user trying to view another profile
+  test("unauth for anon - ANON", async function () {
     const resp = await request(app)
       .get(`/users/u1`);
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if user not found", async function () {
+  test("not found if user not found - ADMIN", async function () {
     const resp = await request(app)
       .get(`/users/nope`)
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(404);
   });
 
-  test("not found if user not found", async function () {
+  test("not found if user not found - USER", async function () {
     const resp = await request(app)
       .get(`/users/nope`)
       .set("authorization", `Bearer ${u1Token}`);
@@ -276,7 +276,7 @@ describe("PATCH /users/:username", () => {
     expect(isSuccessful).toBeTruthy();
   });
 
-  test("user can update themself", async function () {
+  test("user can update themself - USER", async function () {
     const resp = await request(app)
       .patch(`/users/u1`)
       .send({
@@ -294,7 +294,7 @@ describe("PATCH /users/:username", () => {
     });
   });
 
-  test("non-admin user cannot update any other user", async function () {
+  test("non-admin user cannot update any other user - USER", async function () {
     const resp = await request(app)
       .patch(`/users/u2`)
       .send({
@@ -308,34 +308,34 @@ describe("PATCH /users/:username", () => {
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {
-  test("works for users", async function () {
+  test("works for users - ADMIN", async function () {
     const resp = await request(app)
       .delete(`/users/u1`)
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.body).toEqual({ deleted: "u1" });
   });
 
-  test("unauth for anon", async function () {
+  test("unauth for anon - ANON", async function () {
     const resp = await request(app)
       .delete(`/users/u1`);
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if user missing", async function () {
+  test("not found if user missing - ADMIN", async function () {
     const resp = await request(app)
       .delete(`/users/nope`)
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(404);
   });
 
-  test("user can delete themself", async function () {
+  test("user can delete themself - USER", async function () {
     const resp = await request(app)
       .delete(`/users/u1`)
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({ deleted: "u1" });
   });
 
-  test("non-admin user cannot delete any other user", async function () {
+  test("non-admin user cannot delete any other user - USER", async function () {
     const resp = await request(app)
       .delete(`/users/u2`)
       .set("authorization", `Bearer ${u1Token}`);

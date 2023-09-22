@@ -21,6 +21,7 @@ afterAll(commonAfterAll);
 
 /************************************** POST /companies */
 
+// TODO: Change the u2 token to be named "adminToken"
 describe("POST /companies", function () {
   const newCompany = {
     handle: "new",
@@ -29,8 +30,7 @@ describe("POST /companies", function () {
     description: "DescNew",
     numEmployees: 10,
   };
-
-  test("ok for users", async function () {
+  test("ok for admin", async function () {
     const resp = await request(app)
       .post("/companies")
       .send(newCompany)
@@ -52,7 +52,7 @@ describe("POST /companies", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  test("good request with invalid admin", async function () {
+  test("unauth with non-admin", async function () {
     const resp = await request(app)
       .post("/companies")
       .send({
@@ -171,7 +171,7 @@ describe("GET /companies/:handle", function () {
 /************************************** PATCH /companies/:handle */
 
 describe("PATCH /companies/:handle", function () {
-  test("works for users", async function () {
+  test("works for users - ADMIN", async function () {
     const resp = await request(app)
       .patch(`/companies/c1`)
       .send({
@@ -189,7 +189,7 @@ describe("PATCH /companies/:handle", function () {
     });
   });
 
-  test("unauth for anon", async function () {
+  test("unauth for anon - Anon", async function () {
     const resp = await request(app)
       .patch(`/companies/c1`)
       .send({
@@ -198,7 +198,7 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found on no such company", async function () {
+  test("not found on no such company - ADMIN", async function () {
     const resp = await request(app)
       .patch(`/companies/nope`)
       .send({
@@ -208,7 +208,7 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(404);
   });
 
-  test("bad request on handle change attempt", async function () {
+  test("bad request on handle change attempt - ADMIN", async function () {
     const resp = await request(app)
       .patch(`/companies/c1`)
       .send({
@@ -218,7 +218,7 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  test("bad request on invalid data", async function () {
+  test("bad request on invalid data - ADMIN", async function () {
     const resp = await request(app)
       .patch(`/companies/c1`)
       .send({
@@ -228,7 +228,7 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(400);
   });
 
-  test("good request with invalid admin", async function () {
+  test("good request with invalid admin - USER", async function () {
     const resp = await request(app)
       .patch(`/companies/c1`)
       .send({
@@ -242,27 +242,27 @@ describe("PATCH /companies/:handle", function () {
 /************************************** DELETE /companies/:handle */
 
 describe("DELETE /companies/:handle", function () {
-  test("works for users", async function () {
+  test("works for users  - ADMIN", async function () {
     const resp = await request(app)
       .delete(`/companies/c1`)
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.body).toEqual({ deleted: "c1" });
   });
 
-  test("unauth for anon", async function () {
+  test("unauth for anon - ANON", async function () {
     const resp = await request(app)
       .delete(`/companies/c1`);
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found for no such company", async function () {
+  test("not found for no such company - ADMIN", async function () {
     const resp = await request(app)
       .delete(`/companies/nope`)
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(404);
   });
 
-  test("", async function () {
+  test("unauth for non-admin - USER", async function () {
     const resp = await request(app)
       .delete(`/companies/nope`)
       .set("authorization", `Bearer ${u1Token}`);

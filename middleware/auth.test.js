@@ -16,6 +16,8 @@ function next(err) {
   if (err) throw new Error("Got error from middleware");
 }
 
+// TODO: Add tests for auth middleware.
+
 
 describe("authenticateJWT", function () {
   test("works: via header", function () {
