@@ -1,8 +1,8 @@
 # Jobly - Back-end API in Node.js/Express and PostgreSQL
 
 ## Description:
-- Jobly is a fullstack application with the back-end structure provided in this repository.
-- Visit the deployed application: [Jobly App](#) <!-- Add deployment link here -->
+- Jobly is a fullstack application with the back-end structure provided in this repository. To view the front-end please see the react-jobly repository pinned to my profile.
+- To see a demo of the application visit: https://www.loom.com/share/560f21a16f2e4df7ad0395f38a459d0a
 - The Jobly backend is built in Node.js and Express, serving as a pure API application.
 - It handles values from query strings or a JSON body and returns JSON responses.
 - Implements authentication and authorization functions using JWT tokens.
@@ -17,14 +17,11 @@ Future features include:
 ## Instructions:
 1. Ensure PostgreSQL and Node is installed. Fork this repository.
 2. Install the dependencies by running `npm install` in your command line.
-3. Run the following command to set up the database:
+3. Run the following command to set up the database
 4. Start the server by running `node server.js` in the command line.
 5. Run tests using `jest -i`. Ensure Node.js is installed on your machine.
-6. Test the Jobly back-end API with Insomnia:
-a. Install [Insomnia](https://insomnia.rest/download).
-b. <!-- Add specific details or examples for testing with Insomnia -->
 
 
 
- 
+
 
